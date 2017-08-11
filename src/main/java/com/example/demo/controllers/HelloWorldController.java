@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,12 +24,6 @@ public class HelloWorldController {
 	public String index() {
 		return "helloworld/index";
 	}
-	
-	// Create a class named Whisperer that makes Strings lower case
-	// Using the method below, create a method named "whisper" for a GetMapping that
-	//   does essentially the same thing *BUT* uses Whisperer.
-	//   This means that you should map a GET to the path "whisper"
-	//   This means you should have a method named "whisper" that returns a ModelAndView
 	
 	@GetMapping("whisper")
 	public ModelAndView makeThingsQuiet(
@@ -55,6 +50,27 @@ public class HelloWorldController {
 		mv.addObject("pageTitle", title);
 		mv.addObject("thisIsWhatIShouldShow", result);
 		return mv;
+	}
+	
+	@GetMapping("say-something")
+	public String makeAChoice(
+		String speechChoice,
+		String submittedMessage,
+		Model theThingIPutDataIntoForTheView
+	) {
+		// if speechChoice is yell
+		if (speechChoice.equals("yell")) {
+			// make submittedMessage loud
+			Yeller aVariableThatHoldsAYellerObject = new Yeller(submittedMessage);
+			String loud = aVariableThatHoldsAYellerObject.repeatWhatISayButLouder();
+			theThingIPutDataIntoForTheView.addAttribute("output", loud);
+		} else { // otherwise
+			//make submittedMessage quiet
+			Whisperer someQuietThing = new Whisperer(submittedMessage);
+			String quiet = someQuietThing.quiet();
+			theThingIPutDataIntoForTheView.addAttribute("output", quiet);
+		}
+		return "helloworld/mixed-messages";
 	}
 	
 }
